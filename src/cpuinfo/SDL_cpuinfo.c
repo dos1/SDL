@@ -478,7 +478,7 @@ CPU_haveNEON(void)
 #elif (defined(__LINUX__) || defined(__ANDROID__)) && defined(HAVE_GETAUXVAL)
     return ((getauxval(AT_HWCAP) & HWCAP_NEON) == HWCAP_NEON);
 #elif defined(__LINUX__)
-    return readProcAuxvForNeon();
+    return 1; // N900 has NEON
 #elif defined(__ANDROID__)
     /* Use NDK cpufeatures to read either /proc/self/auxv or /proc/cpuinfo */
     {
