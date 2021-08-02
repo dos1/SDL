@@ -446,6 +446,7 @@ SDL_EGL_LoadLibraryOnly(_THIS, const char *egl_path)
     LOAD_FUNC(eglBindAPI);
     LOAD_FUNC(eglQueryAPI);
     LOAD_FUNC(eglQueryString);
+    LOAD_FUNC(eglQuerySurface);
     LOAD_FUNC(eglGetError);
     LOAD_FUNC_EGLEXT(eglQueryDevicesEXT);
     LOAD_FUNC_EGLEXT(eglGetPlatformDisplayEXT);

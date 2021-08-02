@@ -84,6 +84,8 @@ typedef struct SDL_EGL_VideoData
     
     const char *(EGLAPIENTRY *eglQueryString) (EGLDisplay dpy, EGLint name);
 
+    EGLBoolean(EGLAPIENTRY *eglQuerySurface) (EGLDisplay dpy, EGLSurface surface, EGLint attribute, EGLint *value);
+
     EGLenum(EGLAPIENTRY *eglQueryAPI)(void);
     
     EGLBoolean(EGLAPIENTRY  *eglGetConfigAttrib) (EGLDisplay dpy, EGLConfig config,

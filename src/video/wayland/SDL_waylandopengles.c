@@ -112,6 +112,7 @@ int
 Wayland_GLES_SwapWindow(_THIS, SDL_Window *window)
 {
     SDL_WindowData *data = (SDL_WindowData *) window->driverdata;
+    SDL_VideoData *viddata = _this->driverdata;
     const int swap_interval = _this->egl_data->egl_swapinterval;
 
     /* For windows that we know are hidden, skip swaps entirely, if we don't do
@@ -143,6 +144,15 @@ Wayland_GLES_SwapWindow(_THIS, SDL_Window *window)
         SDL_AtomicSet(&data->swap_interval_ready, 0);
     }
 
+    if (viddata->shell.xdg && data->shell_surface.xdg.pending_configure) {
+        int w, h;
+        _this->egl_data->eglQuerySurface(_this->egl_data->egl_display, data->egl_surface, EGL_WIDTH, &w);
+        _this->egl_data->eglQuerySurface(_this->egl_data->egl_display, data->egl_surface, EGL_HEIGHT, &h);
+        if (w == window->w && h == window->h) {
+            xdg_surface_ack_configure( data->shell_surface.xdg.surface, data->shell_surface.xdg.serial);
+            data->shell_surface.xdg.pending_configure = SDL_FALSE;
+        }
+    }
     /* Feed the frame to Wayland. This will set it so the wl_surface_frame callback can fire again. */
     if (!_this->egl_data->eglSwapBuffers(_this->egl_data->egl_display, data->egl_surface)) {
         return SDL_EGL_SetError("unable to show color buffer in an OS-native window", "eglSwapBuffers");

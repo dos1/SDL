@@ -39,6 +39,8 @@ typedef struct {
         struct xdg_popup *popup;
     } roleobj;
     SDL_bool initial_configure_seen;
+    SDL_bool pending_configure;
+    uint32_t serial;
 } SDL_xdg_shell_surface;
 
 #ifdef HAVE_LIBDECOR_H

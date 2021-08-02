@@ -166,9 +166,14 @@ handle_configure_xdg_shell_surface(void *data, struct xdg_surface *xdg, uint32_t
     SDL_Window *window = wind->sdlwindow;
 
     Wayland_HandleResize(window, window->w, window->h, wind->scale_factor);
-    xdg_surface_ack_configure(xdg, serial);
 
-    wind->shell_surface.xdg.initial_configure_seen = SDL_TRUE;
+    if (!wind->shell_surface.xdg.initial_configure_seen) {
+        wind->shell_surface.xdg.initial_configure_seen = SDL_TRUE;
+        xdg_surface_ack_configure(xdg, serial);
+    } else {
+        wind->shell_surface.xdg.pending_configure = SDL_TRUE;
+        wind->shell_surface.xdg.serial = serial;
+    }
 }
 
 static const struct xdg_surface_listener shell_surface_listener_xdg = {
@@ -1250,7 +1255,7 @@ Wayland_HandleResize(SDL_Window *window, int width, int height, float scale)
      * but at least lets us not be terminated by the compositor.
      * Can be removed once SDL's resize logic becomes compliant. */
     if (viddata->shell.xdg && data->shell_surface.xdg.surface) {
-       xdg_surface_set_window_geometry(data->shell_surface.xdg.surface, 0, 0, window->w, window->h);
+       //xdg_surface_set_window_geometry(data->shell_surface.xdg.surface, 0, 0, window->w, window->h);
     }
 }
 
@@ -1313,7 +1318,7 @@ void Wayland_SetWindowSize(_THIS, SDL_Window * window)
 
     /* Update the geometry which may have been set by a hack in Wayland_HandleResize */
     if (data->shell.xdg && wind->shell_surface.xdg.surface) {
-       xdg_surface_set_window_geometry(wind->shell_surface.xdg.surface, 0, 0, window->w, window->h);
+       //xdg_surface_set_window_geometry(wind->shell_surface.xdg.surface, 0, 0, window->w, window->h);
     }
 }
 
